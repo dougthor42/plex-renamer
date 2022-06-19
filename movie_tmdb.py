@@ -12,7 +12,7 @@ import tmdbsimple as tmdb
 from loguru import logger
 
 INVALID_FILENAME_CHARS = {"<", ">", ":", '"', "/", "\\", "|", "?", "*"}
-RE_GOOD_FN = re.compile(r"^.+ \(\d{4}\) \{tmdb-\d+\}$")
+RE_GOOD_FN = re.compile(r"^.+ \(\d{4}\) \{t[mv]db-\d+\}$")
 
 tmdb.API_KEY = (Path(__file__).parent / "API_KEY").read_text().strip()
 

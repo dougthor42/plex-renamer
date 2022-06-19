@@ -16,6 +16,7 @@ import movie_tmdb
         ("New Airplane! (1980) {tmdb-813}", True),
         ("めがね めがね? (2031) {tmdb-123}", True),
         ("めがね めがね? [2031] {tmdb-123}", False),  # Wrong parens on year.
+        ("New Airplane! (1980) {tvdb-813}", True),
     ],
 )
 def test_RE_GOOD_FN(string, want):
