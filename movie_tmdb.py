@@ -220,6 +220,12 @@ def loop_path(path: Path, confirm: bool = True, dry_run: bool = False) -> None:
     for root, _, files in os.walk(path):
         for file in sorted(files):
             fp = Path(root) / file
+
+            # only deal with video files
+            if fp.suffix.lower() not in {".avi", ".mp4", ".mkv", ".m4v"}:
+                logger.info(f"Skip '{fp}` - doesn't appear to be a video file.")
+                continue
+
             logger.info(f"Checking '{fp}'")
 
             # Skip files that already match our pattern
