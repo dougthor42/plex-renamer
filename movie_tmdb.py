@@ -201,6 +201,20 @@ def create_new_filepath(fp: Path, result: SearchResult) -> Path:
     return new_fp
 
 
+def move_to_folder(fp: Path, dry_run: bool = False) -> Optional[Path]:
+    """
+    Move files to the correct folder path.
+    """
+    folder_name = fp.stem
+    if fp.parent.name != folder_name:
+        new_path = fp.parent / folder_name / fp.name
+        logger.info(f"Moving {fp} to {new_path}")
+        if not dry_run:
+            new_path.parent.mkdir()
+            fp.rename(new_path)
+        return new_path
+
+
 def loop_path(path: Path, confirm: bool = True, dry_run: bool = False) -> None:
 
     for root, _, files in os.walk(path):
@@ -210,7 +224,8 @@ def loop_path(path: Path, confirm: bool = True, dry_run: bool = False) -> None:
 
             # Skip files that already match our pattern
             if RE_GOOD_FN.fullmatch(fp.stem) is not None:
-                logger.info(f"Skipping '{fp.name}': already looks good!")
+                logger.info(f"Skip renaming '{fp.name}': already looks good!")
+                move_to_folder(fp, dry_run=dry_run)
                 continue
 
             query = get_search_term_from_fn(fp.stem)
@@ -222,6 +237,7 @@ def loop_path(path: Path, confirm: bool = True, dry_run: bool = False) -> None:
                 if not dry_run:
                     try:
                         fp.rename(new_fp)
+                        move_to_folder(fp)
                     except PermissionError:
                         msg = (
                             f"Permission denied when trying to rename '{fp}'."

@@ -138,3 +138,30 @@ def test_get_search_term_from_fn(fn, want):
 def test_create_new_filepath(fp, result, want):
     got = movie_tmdb.create_new_filepath(fp, result)
     assert got == want
+
+
+@pytest.mark.parametrize(
+    "fp, want",
+    [
+        (Path("/foo/bar.avi"), Path("/foo/bar/bar.avi")),
+        (
+            Path("/foo/bar (1234) {tmdb-1234}.avi"),
+            Path("/foo/bar (1234) {tmdb-1234}/bar (1234) {tmdb-1234}.avi"),
+        ),
+        (
+            Path("/media/tyr/thor/Video/Movies/Monsters, Inc. (2001) {tmdb-585}.avi"),
+            Path(
+                "/media/tyr/thor/Video/Movies/Monsters, Inc. (2001) {tmdb-585}/Monsters, Inc. (2001) {tmdb-585}.avi"  # noqa: E501
+            ),
+        ),
+        (
+            Path(
+                "/media/tyr/thor/Video/Movies/Monsters, Inc. (2001) {tmdb-585}/Monsters, Inc. (2001) {tmdb-585}.avi"  # noqa: E501
+            ),
+            None,
+        ),
+    ],
+)
+def test_move_to_folder(fp, want):
+    got = movie_tmdb.move_to_folder(fp, dry_run=True)
+    assert got == want
