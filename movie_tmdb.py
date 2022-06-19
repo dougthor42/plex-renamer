@@ -217,6 +217,9 @@ def move_to_folder(fp: Path, dry_run: bool = False) -> Optional[Path]:
 
 def loop_path(path: Path, confirm: bool = True, dry_run: bool = False) -> None:
 
+    num_changed = 0
+    num_files_moved = 0
+
     for root, _, files in os.walk(path):
         for file in sorted(files):
             fp = Path(root) / file
@@ -231,7 +234,9 @@ def loop_path(path: Path, confirm: bool = True, dry_run: bool = False) -> None:
             # Skip files that already match our pattern
             if RE_GOOD_FN.fullmatch(fp.stem) is not None:
                 logger.info(f"Skip renaming '{fp.name}': already looks good!")
-                move_to_folder(fp, dry_run=dry_run)
+                new_folder = move_to_folder(fp, dry_run=dry_run)
+                if new_folder is not None:
+                    num_files_moved += 1
                 continue
 
             query = get_search_term_from_fn(fp.stem)
@@ -239,6 +244,7 @@ def loop_path(path: Path, confirm: bool = True, dry_run: bool = False) -> None:
             if results is not None:
                 selection = ask_user(results, file, confirm=confirm)
                 new_fp = create_new_filepath(fp, selection)
+                num_changed += 1
                 logger.info(f"Renaming '{fp}' to '{new_fp}'")
                 if not dry_run:
                     try:
@@ -250,6 +256,9 @@ def loop_path(path: Path, confirm: bool = True, dry_run: bool = False) -> None:
                             " Did you forget to run with 'sudo'?"
                         )
                         logger.error(msg)
+
+    logger.info(f"Number of files changed: {num_changed}")
+    logger.info(f"Number of files moved: {num_files_moved}")
 
 
 @click.command()
