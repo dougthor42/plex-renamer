@@ -261,7 +261,7 @@ def loop_path(path: Path, confirm: bool = True, dry_run: bool = False) -> None:
                 if not dry_run:
                     try:
                         fp.rename(new_fp)
-                        move_to_folder(fp)
+                        move_to_folder(new_fp)
                     except PermissionError:
                         msg = (
                             f"Permission denied when trying to rename '{fp}'."
