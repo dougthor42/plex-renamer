@@ -12,6 +12,7 @@ import tmdbsimple as tmdb
 from loguru import logger
 
 INVALID_FILENAME_CHARS = {"<", ">", ":", '"', "/", "\\", "|", "?", "*"}
+VIDEO_EXT = {".avi", ".mp4", ".mkv", ".m4v", ".ogm"}
 RE_GOOD_FN = re.compile(r"^.+ \(\d{4}\) \{t[mv]db-\d+\}$")
 
 tmdb.API_KEY = (Path(__file__).parent / "API_KEY").read_text().strip()
@@ -225,7 +226,7 @@ def loop_path(path: Path, confirm: bool = True, dry_run: bool = False) -> None:
             fp = Path(root) / file
 
             # only deal with video files
-            if fp.suffix.lower() not in {".avi", ".mp4", ".mkv", ".m4v"}:
+            if fp.suffix.lower() not in VIDEO_EXT:
                 logger.info(f"Skip '{fp}` - doesn't appear to be a video file.")
                 continue
 
