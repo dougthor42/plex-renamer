@@ -100,6 +100,17 @@ def test_strip_leading_number(data, want):
 
 
 @pytest.mark.parametrize(
+    "data, want",
+    [
+        ("The.Bagel.In.The.Alley.1945.XxX.YyY", "The Bagel"),
+    ],
+)
+def test_first_couple_words_from_dots(data, want):
+    got = movie_tmdb._first_couple_words_from_dots(data)
+    assert got == want
+
+
+@pytest.mark.parametrize(
     "fn, want",
     [
         ("Airplane [1980]", "Airplane"),
@@ -110,6 +121,7 @@ def test_strip_leading_number(data, want):
         ("Youth in Revolt", "Youth in Revolt"),
         ("Pixar Classic - 01 - Toy Story", "Toy Story"),
         ("Pixar Classic - 10 - Up (2009)", "Up"),
+        ("Slumdog.Millionaire.2008.foo.bar", "Slumdog Millionaire"),
     ],
 )
 def test_get_search_term_from_fn(fn, want):

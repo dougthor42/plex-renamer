@@ -170,6 +170,16 @@ def _strip_leading_number(data: str) -> str:
     return data.lstrip("0123456789 -")
 
 
+def _first_couple_words_from_dots(data: str) -> str:
+    """
+    Some.Long.Title.foo.bar.XXYYZZ.baz -> "Some Long"
+    """
+    split_by_dot = data.split(".")
+    if len(split_by_dot) > 2:
+        return " ".join(split_by_dot[:2])
+    return data
+
+
 def get_search_term_from_fn(fn: str) -> str:
     """
     Attempt to get a search term from the filename.
@@ -181,6 +191,7 @@ def get_search_term_from_fn(fn: str) -> str:
     best_guess = _strip_year(best_guess)
     best_guess = _strip_leading_info(best_guess)
     best_guess = _strip_leading_number(best_guess)
+    best_guess = _first_couple_words_from_dots(best_guess)
 
     return best_guess
 
